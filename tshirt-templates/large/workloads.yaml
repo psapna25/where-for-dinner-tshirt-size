@@ -1,0 +1,219 @@
+#@ load("@ytt:data", "data")
+
+#@ def buildDBProfileEnv():
+#@ profiles = ""
+#@ if data.values.dbType == "mysql":
+#@ profiles = "mysql"
+#@ else:
+#@ profiles = "postgres"
+#@ end
+  - name: spring_profiles_active
+    value: #@ profiles
+#@ end
+
+---
+apiVersion: carto.run/v1alpha1
+kind: Workload
+metadata:
+  name: hungryman
+  namespace: #@ data.values.workloadNamespace
+  labels:
+    apps.tanzu.vmware.com/workload-type: web
+    app.kubernetes.io/part-of: hungryman-api-gateway
+spec:
+  params:
+  - name: annotations
+    value: 
+      autoscaling.knative.dev/minScale: "1"  
+      autoscaling.knative.dev/target: "200"
+      autoscaling.knative.dev/maxScale: "4"
+  source:
+    git:
+      url: https://github.com/gm2552/hungryman.git
+      ref:
+        branch: main
+    subPath: hungryman-api-gateway
+    
+---
+apiVersion: carto.run/v1alpha1
+kind: Workload
+metadata:
+  name: hungryman-search
+  namespace: #@ data.values.workloadNamespace
+  labels:
+    apps.tanzu.vmware.com/workload-type: web
+    app.kubernetes.io/part-of: hungryman-search
+    networking.knative.dev/visibility: cluster-local
+spec:
+  env: #@ buildDBProfileEnv()
+  params:
+  - name: annotations
+    value: 
+      autoscaling.knative.dev/minScale: "1"
+      autoscaling.knative.dev/target: "200"
+      autoscaling.knative.dev/maxScale: "4"
+  serviceClaims:
+  - name: rmq
+    ref:
+      apiVersion: services.apps.tanzu.vmware.com/v1alpha1
+      kind: ResourceClaim
+      name: #@ data.values.rabbitMQName
+  - name: db
+    ref:
+      apiVersion: services.apps.tanzu.vmware.com/v1alpha1
+      kind: ResourceClaim
+      name: #@ data.values.dbName
+  source:
+    git:
+      url: https://github.com/gm2552/hungryman.git
+      ref:
+        branch: main
+    subPath: hungryman-search
+---
+
+apiVersion: carto.run/v1alpha1
+kind: Workload
+metadata:
+  name: hungryman-search-proc
+  namespace: #@ data.values.workloadNamespace
+  labels:
+    apps.tanzu.vmware.com/workload-type: web
+    app.kubernetes.io/part-of: hungryman-search-proc
+    networking.knative.dev/visibility: cluster-local
+spec:
+  build: 
+    env:
+    - name: BP_MAVEN_BUILD_ARGUMENTS
+      value: '-P native -Dmaven.test.skip=true --no-transfer-progress package'
+  env: 
+  - name: spring_profiles_active
+    value: crawler,redis
+  serviceClaims: 
+  - name: rmq
+    ref:
+      apiVersion: services.apps.tanzu.vmware.com/v1alpha1
+      kind: ResourceClaim
+      name: #@ data.values.rabbitMQName
+  - name: redis
+    ref:
+      apiVersion: v1
+      kind: Secret
+      name: #@ data.values.redisName + "-redis-secret"
+  source:
+    git:
+      url: https://github.com/gm2552/hungryman.git
+      ref:
+        branch: main
+    subPath: hungryman-search-proc
+    
+---
+apiVersion: carto.run/v1alpha1
+kind: Workload
+metadata:
+  name: hungryman-notify
+  namespace: #@ data.values.workloadNamespace
+  labels:
+    apps.tanzu.vmware.com/workload-type: web
+    app.kubernetes.io/part-of: hungryman-notify
+    networking.knative.dev/visibility: cluster-local
+spec:
+  build: 
+    env:
+    - name: BP_MAVEN_BUILD_ARGUMENTS
+      value: '-P native -Dmaven.test.skip=true --no-transfer-progress package'
+  serviceClaims: 
+  - name: rmq
+    ref:
+      apiVersion: services.apps.tanzu.vmware.com/v1alpha1
+      kind: ResourceClaim
+      name: #@ data.values.rabbitMQName
+  source:
+    git:
+      url: https://github.com/gm2552/hungryman.git
+      ref:
+        branch: main
+    subPath: hungryman-notify
+---
+apiVersion: carto.run/v1alpha1
+kind: Workload
+metadata:
+  name: hungryman-availability
+  namespace: #@ data.values.workloadNamespace
+  labels:
+    apps.tanzu.vmware.com/workload-type: web
+    app.kubernetes.io/part-of: hungryman-availability
+    networking.knative.dev/visibility: cluster-local
+spec:
+  build: 
+    env:
+    - name: BP_MAVEN_BUILD_ARGUMENTS
+      value: '-P native -Dmaven.test.skip=true --no-transfer-progress package'
+  env: #@ buildDBProfileEnv()
+  params:
+  - name: annotations
+    value: 
+      autoscaling.knative.dev/minScale: "1"
+      autoscaling.knative.dev/target: "200"
+      autoscaling.knative.dev/maxScale: "4"
+  serviceClaims:
+  - name: rmq
+    ref:
+      apiVersion: services.apps.tanzu.vmware.com/v1alpha1
+      kind: ResourceClaim
+      name: #@ data.values.rabbitMQName
+  - name: db
+    ref:
+      apiVersion: services.apps.tanzu.vmware.com/v1alpha1
+      kind: ResourceClaim
+      name: #@ data.values.dbName   
+  source:
+    git:
+      url: https://github.com/gm2552/hungryman.git
+      ref:
+        branch: main
+    subPath: hungryman-availability
+
+---
+apiVersion: carto.run/v1alpha1
+kind: Workload
+metadata:
+  name: hungryman-ui
+  namespace: #@ data.values.workloadNamespace
+  labels:
+    apps.tanzu.vmware.com/workload-type: web
+    app.kubernetes.io/part-of: hungryman-ui
+    networking.knative.dev/visibility: cluster-local
+spec:
+  params:
+  - name: annotations
+    value: 
+      autoscaling.knative.dev/minScale: "1"   
+  source:
+    git:
+      url: https://github.com/gm2552/hungryman.git
+      ref:
+        branch: main
+    subPath: hungryman-ui
+---
+apiVersion: carto.run/v1alpha1
+kind: Workload
+metadata:
+  name: hungryman-crawler
+  namespace: #@ data.values.workloadNamespace
+  labels:
+    apps.tanzu.vmware.com/workload-type: server
+    app.kubernetes.io/part-of: hungryman-crawler
+    networking.knative.dev/visibility: cluster-local
+spec:
+  params:
+  - name: ports
+    value:
+    - port: 80
+      containerPort: 8080
+      name: http
+  source:
+    git:
+      url: https://github.com/gm2552/hungryman.git
+      ref:
+        branch: main
+    subPath: hungryman-crawler

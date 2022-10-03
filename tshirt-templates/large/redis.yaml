@@ -1,0 +1,146 @@
+#@ load("@ytt:data", "data")
+
+---
+apiVersion: secretgen.k14s.io/v1alpha1
+kind: Password
+metadata:
+ name: #@ data.values.redisName + "-redis-password"
+ namespace: #@ data.values.workloadNamespace
+spec:
+ length: 64
+ secretTemplate:
+   type: Opaque
+   stringData:
+     password: $(value)
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: #@ data.values.redisName
+  namespace: #@ data.values.workloadNamespace
+  labels:
+    app: #@ 'hungryman-' + data.values.workloadNamespace
+    service: #@ data.values.redisName
+spec:
+  ports:
+    - port: 6379
+      name: redis-client
+  selector:
+    app: #@ 'hungryman-' + data.values.workloadNamespace
+    service: #@ data.values.redisName
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: #@ data.values.redisName
+  namespace: #@ data.values.workloadNamespace
+  labels:
+    app: #@ 'hungryman-' + data.values.workloadNamespace
+    service: #@ data.values.redisName
+spec:
+  selector:
+    matchLabels:
+      app: #@ 'hungryman-' + data.values.workloadNamespace  
+      service: #@ data.values.redisName
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: #@ 'hungryman-' + data.values.workloadNamespace    
+        service: #@ data.values.redisName
+    spec:
+      containers:
+        - name: #@ data.values.redisName
+          image: bitnami/redis
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "100Mi"
+          ports:
+            - name: redis
+              containerPort: 6379
+              protocol: "TCP"
+          env:
+          - name: REDIS_HOST
+            value: #@ data.values.redisName
+          - name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name:  #@ data.values.redisName + "-redis-password"
+                key: password
+          volumeMounts:
+            - mountPath: /var/lib/redis
+              name: hungruyman-redis-data
+
+      volumes:
+        - name: hungruyman-redis-data
+          emptyDir: {}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: bitnami-redis-secret-template-reader
+  namespace: #@ data.values.workloadNamespace
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: bitnami-redis-secret-template-reader
+  namespace: #@ data.values.workloadNamespace
+rules:
+- apiGroups:
+  - "*"
+  resources:
+  - secrets
+  - services
+  - redis
+  verbs:
+  - get
+  - list
+  - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: bitnami-redis-secret-template-reader
+  namespace: #@ data.values.workloadNamespace
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: bitnami-redis-secret-template-reader
+subjects:
+- kind: ServiceAccount
+  name: bitnami-redis-secret-template-reader
+---
+apiVersion: secretgen.carvel.dev/v1alpha1
+kind: SecretTemplate
+metadata:
+ name: #@ data.values.redisName + "-redis-secret"
+ namespace: #@ data.values.workloadNamespace
+spec:
+ serviceAccountName: bitnami-redis-secret-template-reader
+ inputResources:
+ - name: creds
+   ref:
+     apiVersion: v1
+     kind: Secret
+     name: #@ data.values.redisName + "-redis-password"
+ - name: redis-service
+   ref:
+    apiVersion: v1
+    kind: Service
+    name: #@ data.values.redisName 
+ template:
+  metadata:
+   labels:
+     app.kubernetes.io/component: redis
+     app.kubernetes.io/instance: #@ data.values.redisName
+     services.apps.tanzu.vmware.com/class: bitnami-redis
+  stringData:
+    port: $(.redis-service.spec.ports[?(@.name=="redis-client")].port)
+    host: "$(.redis-service.metadata.name).$(.redis-service.metadata.namespace)"
+    provider: bitnami
+    type: redis
+  data:
+    password: $(.creds.data.password)

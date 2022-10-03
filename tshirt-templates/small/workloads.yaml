@@ -1,0 +1,130 @@
+#@ load("@ytt:data", "data")
+
+---
+apiVersion: carto.run/v1alpha1
+kind: Workload
+metadata:
+  name: hungryman
+  namespace: #@ data.values.workloadNamespace
+  labels:
+    apps.tanzu.vmware.com/workload-type: web
+    app.kubernetes.io/part-of: hungryman-api-gateway
+spec:
+  params:
+  - name: annotations
+    value: 
+      autoscaling.knative.dev/minScale: "1"  
+      autoscaling.knative.dev/target: "200"
+      autoscaling.knative.dev/maxScale: "4"
+  source:
+    git:
+      url: https://github.com/gm2552/hungryman.git
+      ref:
+        branch: main
+    subPath: hungryman-api-gateway
+    
+---
+apiVersion: carto.run/v1alpha1
+kind: Workload
+metadata:
+  name: hungryman-search
+  namespace: #@ data.values.workloadNamespace
+  labels:
+    apps.tanzu.vmware.com/workload-type: web
+    app.kubernetes.io/part-of: hungryman-search
+    networking.knative.dev/visibility: cluster-local
+spec:
+  params:
+  - name: annotations
+    value: 
+      autoscaling.knative.dev/minScale: "1"
+      autoscaling.knative.dev/target: "200"
+      autoscaling.knative.dev/maxScale: "4"
+  serviceClaims:
+  - name: rmq
+    ref:
+      apiVersion: services.apps.tanzu.vmware.com/v1alpha1
+      kind: ResourceClaim
+      name: #@ data.values.rabbitMQName
+  source:
+    git:
+      url: https://github.com/gm2552/hungryman.git
+      ref:
+        branch: main
+    subPath: hungryman-search
+---
+
+apiVersion: carto.run/v1alpha1
+kind: Workload
+metadata:
+  name: hungryman-search-proc
+  namespace: #@ data.values.workloadNamespace
+  labels:
+    apps.tanzu.vmware.com/workload-type: web
+    app.kubernetes.io/part-of: hungryman-search-proc
+    networking.knative.dev/visibility: cluster-local
+spec:
+  serviceClaims: 
+  - name: rmq
+    ref:
+      apiVersion: services.apps.tanzu.vmware.com/v1alpha1
+      kind: ResourceClaim
+      name: #@ data.values.rabbitMQName
+  source:
+    git:
+      url: https://github.com/gm2552/hungryman.git
+      ref:
+        branch: main
+    subPath: hungryman-search-proc
+    
+---
+
+apiVersion: carto.run/v1alpha1
+kind: Workload
+metadata:
+  name: hungryman-availability
+  namespace: #@ data.values.workloadNamespace
+  labels:
+    apps.tanzu.vmware.com/workload-type: web
+    app.kubernetes.io/part-of: hungryman-availability
+    networking.knative.dev/visibility: cluster-local
+spec:
+  params:
+  - name: annotations
+    value: 
+      autoscaling.knative.dev/minScale: "1"
+      autoscaling.knative.dev/target: "200"
+      autoscaling.knative.dev/maxScale: "4"
+  serviceClaims:
+    ref:
+      apiVersion: services.apps.tanzu.vmware.com/v1alpha1
+      kind: ResourceClaim
+      name: #@ data.values.rabbitMQName
+  source:
+    git:
+      url: https://github.com/gm2552/hungryman.git
+      ref:
+        branch: main
+    subPath: hungryman-availability
+
+---
+apiVersion: carto.run/v1alpha1
+kind: Workload
+metadata:
+  name: hungryman-ui
+  namespace: #@ data.values.workloadNamespace
+  labels:
+    apps.tanzu.vmware.com/workload-type: web
+    app.kubernetes.io/part-of: hungryman-ui
+    networking.knative.dev/visibility: cluster-local
+spec:
+  params:
+  - name: annotations
+    value: 
+      autoscaling.knative.dev/minScale: "1"   
+  source:
+    git:
+      url: https://github.com/gm2552/hungryman.git
+      ref:
+        branch: main
+    subPath: hungryman-ui
