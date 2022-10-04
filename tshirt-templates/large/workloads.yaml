@@ -85,15 +85,15 @@ spec:
     env:
     - name: BP_MAVEN_BUILD_ARGUMENTS
       value: '-P native -Dmaven.test.skip=true --no-transfer-progress package'
+  params:
+  - name: annotations
+    value: 
+      autoscaling.knative.dev/target: "200"
+      autoscaling.knative.dev/maxScale: "4"
   env: 
   - name: spring_profiles_active
     value: crawler,redis
   serviceClaims: 
-  - name: rmq
-    ref:
-      apiVersion: services.apps.tanzu.vmware.com/v1alpha1
-      kind: ResourceClaim
-      name: #@ data.values.rabbitMQName
   - name: redis
     ref:
       apiVersion: v1
@@ -121,12 +121,11 @@ spec:
     env:
     - name: BP_MAVEN_BUILD_ARGUMENTS
       value: '-P native -Dmaven.test.skip=true --no-transfer-progress package'
-  serviceClaims: 
-  - name: rmq
-    ref:
-      apiVersion: services.apps.tanzu.vmware.com/v1alpha1
-      kind: ResourceClaim
-      name: #@ data.values.rabbitMQName
+  params:
+  - name: annotations
+    value: 
+      autoscaling.knative.dev/target: "200"
+      autoscaling.knative.dev/maxScale: "4"
   source:
     git:
       url: https://github.com/gm2552/hungryman.git
@@ -156,11 +155,6 @@ spec:
       autoscaling.knative.dev/target: "200"
       autoscaling.knative.dev/maxScale: "4"
   serviceClaims:
-  - name: rmq
-    ref:
-      apiVersion: services.apps.tanzu.vmware.com/v1alpha1
-      kind: ResourceClaim
-      name: #@ data.values.rabbitMQName
   - name: db
     ref:
       apiVersion: services.apps.tanzu.vmware.com/v1alpha1
@@ -203,7 +197,6 @@ metadata:
   labels:
     apps.tanzu.vmware.com/workload-type: server
     app.kubernetes.io/part-of: hungryman-crawler
-    networking.knative.dev/visibility: cluster-local
 spec:
   params:
   - name: ports

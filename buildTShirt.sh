@@ -171,6 +171,8 @@ mkdir $outputDir
 
 printf '\nGenerating configuration files into directory %s\n' "'$outputDir'"
 
+rm -rf ./$outputDir/* -y 
+
 ytt -f ./tshirt-templates/common/rmqCluster.yaml -v rabbitMQName=$rabbitMQName -v serviceNamespace=$serviceNamespace >> ./$outputDir/rmqCluster.yaml
 ytt -f ./tshirt-templates/common/rmqResourceClaim.yaml -v rabbitMQName=$rabbitMQName -v serviceNamespace=$serviceNamespace -v workloadNamespace=$workloadNamespace >> ./$outputDir/rmqResourceClaim.yaml
 ytt -f ./tshirt-templates/$tshirtSize/workloads.yaml -v rabbitMQName=$rabbitMQName -v serviceNamespace=$serviceNamespace -v workloadNamespace=$workloadNamespace -v dbType=$dbType -v dbName=$dbName -v redisName=$redisName  >> ./$outputDir/workloads.yaml
@@ -186,31 +188,47 @@ then
 
 fi
 
-if [ "$tshirtSize" == "medium" ] || [ "$tshirtSize" == "large" ]
+if [ "$tshirtSize" == "large" ]
 then
   ytt -f ./tshirt-templates/large/redis.yaml -v redisName=$redisName -v workloadNamespace=$workloadNamespace >> ./$outputDir/redis.yaml
 fi
 
+# Write to an install file
+echo "export serviceNamespace=$serviceNamespace
+export outputDir=$outputDir
+export workloadNamespace=$workloadNamespace
+export tshirtSize=$tshirtSize
+export redisName=$redisName
+export dbInstanceFile=$dbInstanceFile
+export dbType=$dbType
+export dbName=$dbName
+export dbClaimFile=$dbClaimFile
+export rabbitMQName=$rabbitMQName
+
+./deployEx.sh"  >> ./$outputDir/runInstall.sh
+
+chmod +x ./$outputDir/runInstall.sh
+cp ./tshirt-templates/common/deployEx.sh ./$outputDir/deployEx.sh
+chmod +x ./$outputDir/deployEx.sh
+
 # Apply resources to the cluster
 
-echo "Applying inputs to the cluster"
+echo ' '
+printf 'Install T-Shirt components now: yes/no (default %s)? ' "yes"
 
-#kubectl create ns $serviceNamespace
-#kubectl create ns $workloadNamespace
-#kubectl apply -f ./mysql.yaml
+read install
 
-#kubectl apply -f ./rmq.yaml
+if [ -z "$install" ]
+then
+    install=yes
+fi
 
-#echo ' '
-#echo "Waiting for MySQL and RabbitMQ instances to spin up."
+if [ "$install" == "yes" ] 
+then
+  cd $outputDir
+  ./runInstall.sh
+fi
 
-#kubectl wait --for=condition=ready --timeout=300s pod -l app.kubernetes.io/instance=$mySQLName -n $serviceNamespace 
-#kubectl wait --for=condition=ready --timeout=300s pod -l app.kubernetes.io/name=$rabbitMQName -n $serviceNamespace
 
-
-#if [ "$useKNativeEventing" == "yes" ]
-#then
-#    kubectl apply -f ./kneventing.yaml
-#fi
-
-#kubectl apply -f ./workloads.yaml
+printf "\nTo run or re-run the component install, 'cd' to the %s directory and run './runInstall.sh'" "'$outputDir'"
+echo ' '

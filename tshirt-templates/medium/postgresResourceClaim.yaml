@@ -1,0 +1,48 @@
+#@ load("@ytt:data", "data")
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: postgres-app-operator-reader
+  labels:
+    servicebinding.io/controller: "true"
+rules:
+- apiGroups: ["sql.tanzu.vmware.com"]
+  resources: ["postgres"]
+  verbs: ["get", "list", "watch"]
+---
+apiVersion: services.apps.tanzu.vmware.com/v1alpha1
+kind: ClusterInstanceClass
+metadata:
+  name: postgres
+spec:
+  description:
+    short: Postgres DB Instances
+  pool:
+    group: sql.tanzu.vmware.com
+    kind: Postgres  
+---
+apiVersion: services.apps.tanzu.vmware.com/v1alpha1
+kind: ResourceClaimPolicy
+metadata:
+  name: postgres-cross-namespace
+  namespace: #@ data.values.serviceNamespace
+spec:
+  consumingNamespaces:
+  - '*'
+  subject:
+    group: sql.tanzu.vmware.com
+    kind: Postgres
+---
+apiVersion: services.apps.tanzu.vmware.com/v1alpha1
+kind: ResourceClaim
+metadata:
+  name: #@ data.values.dbName
+  namespace: #@ data.values.workloadNamespace
+spec:
+  ref:
+    apiVersion: sql.tanzu.vmware.com/v1
+    kind: Postgres
+    name: #@ data.values.dbName
+    namespace: #@ data.values.serviceNamespace

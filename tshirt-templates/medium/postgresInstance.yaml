@@ -1,0 +1,14 @@
+#@ load("@ytt:data", "data")
+
+---
+apiVersion: sql.tanzu.vmware.com/v1
+kind: Postgres
+metadata:
+  name: #@ data.values.dbName
+  namespace: #@ data.values.serviceNamespace
+spec:
+  memory: 800Mi
+  cpu: "0.8"
+  storageSize: 800M
+  highAvailability:
+    enabled: false

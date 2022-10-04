@@ -53,7 +53,6 @@ spec:
         branch: main
     subPath: hungryman-search
 ---
-
 apiVersion: carto.run/v1alpha1
 kind: Workload
 metadata:
@@ -64,6 +63,12 @@ metadata:
     app.kubernetes.io/part-of: hungryman-search-proc
     networking.knative.dev/visibility: cluster-local
 spec:
+  params:
+  - name: annotations
+    value: 
+      autoscaling.knative.dev/minScale: "1"
+      autoscaling.knative.dev/target: "200"
+      autoscaling.knative.dev/maxScale: "4"
   serviceClaims: 
   - name: rmq
     ref:
@@ -76,9 +81,7 @@ spec:
       ref:
         branch: main
     subPath: hungryman-search-proc
-    
 ---
-
 apiVersion: carto.run/v1alpha1
 kind: Workload
 metadata:
@@ -96,6 +99,7 @@ spec:
       autoscaling.knative.dev/target: "200"
       autoscaling.knative.dev/maxScale: "4"
   serviceClaims:
+  - name: rmq
     ref:
       apiVersion: services.apps.tanzu.vmware.com/v1alpha1
       kind: ResourceClaim
