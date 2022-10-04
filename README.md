@@ -4,7 +4,7 @@
 
 Hungryman T-Shirt sizing is a set of scripts and templates for creating a stock sized configuration for the Hungryman application.  The scripts allows for one of three sizes to be created along with a few customizations such as workload and service name spaces, service names, and database type.  The output of the scripts are a set of configurations files for a give size and workload name space to deploy the application in along with a `install1` script to deploy the application which can executed either at the same time the configurations files are created or at a later time.  The output configuration files can also be archived for later use.
 
-##Usage
+## Usage
 
 ### Create A Deployment Configuration
 
