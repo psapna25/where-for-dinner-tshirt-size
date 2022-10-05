@@ -54,7 +54,13 @@ The install script generates on of three stock configuration `sizes`.
     - RabbitMQ backed eventing broker
     - RabbitMQ backed triggers
     
-All additional configuration options are mainly service naming with the exception of choosing between MySQL or Postgres as the database implementation.  It is recommended that service names are unique per application configuration.  Each configuration of the application is also required to be deployed into its own workload namespace, however the same service instance namespace can be shared.
+A lot additional configuration options are mainly service naming.  It is recommended that service names are unique per application configuration.  Each configuration of the application is also required to be deployed into its own workload namespace, however the same service instance namespace can be shared.
+
+There are three configuration options that are not naming related:
+
+- **Database Type** - For medium and large sizes, the database types of Postgres or MySQL are valid options and the install script will spin up an instance of the selected database type.
+- **Use Web Workload Type** - If set to yes, all workloads will use the `web` workload type.  If no, then the server and worker workload types will be applied to appropriate workloads.
+- **Use Test/Scan Supply Chain**  - If set to yes, a testing/scanning supply chain will be used to build the workloads (assuming an appropriate supply chain has been installed).
 
 ###  Service Requirements
 
