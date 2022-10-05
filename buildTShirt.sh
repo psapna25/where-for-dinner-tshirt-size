@@ -42,6 +42,30 @@ do
 
 
 #
+# Use 'web' workload type
+#
+   printf 'Use web workload type: yes/no (default %s)? ' "'yes'"
+
+   read useWebType
+
+   if [ -z "$useWebType" ]
+   then
+      useWebType='yes'
+   fi 
+
+#
+# Use 'test' supplying
+#
+   printf 'Use test/scan supply chain: yes/no (default %s)? ' "'no'"
+
+   read useTestScan
+
+   if [ -z "$useTestScan" ]
+   then
+      useTestScan='no'
+   fi 
+
+#
 # Workload namespace
 #
 	printf 'Workload Namespace: (default %s): ' "'$default_workload_namespace'"
@@ -111,7 +135,7 @@ do
 #
        defaultDBFullName=$dbType'-'$default_db_name
 
-       printf 'MySQL Instance Name (default %s): ' "'$defaultDBFullName'"
+       printf 'Database Instance Name (default %s): ' "'$defaultDBFullName'"
     
        read dbName
     
@@ -138,7 +162,9 @@ do
 	
 	echo ' '
 	echo Configured Options:
-    printf '   T-Shirt size: %s\n' "[$tshirtSize]"
+   printf '   T-Shirt size: %s\n' "[$tshirtSize]"
+   printf '   Use web type: %s\n' "[$useWebType]"
+   printf '   Use test/scan supply chain: %s\n' "[$useTestScan]"  
 	printf '   Workload Namespace: %s\n' "[$workloadNamespace]"
 	printf '   Service Instance Namespace: %s\n' "[$serviceNamespace]"
 	printf '   RabbitMQ Cluster Name: %s\n' "[$rabbitMQName]"
@@ -175,7 +201,7 @@ rm -rf ./$outputDir/* -y
 
 ytt -f ./tshirt-templates/common/rmqCluster.yaml -v rabbitMQName=$rabbitMQName -v serviceNamespace=$serviceNamespace >> ./$outputDir/rmqCluster.yaml
 ytt -f ./tshirt-templates/common/rmqResourceClaim.yaml -v rabbitMQName=$rabbitMQName -v serviceNamespace=$serviceNamespace -v workloadNamespace=$workloadNamespace >> ./$outputDir/rmqResourceClaim.yaml
-ytt -f ./tshirt-templates/$tshirtSize/workloads.yaml -v rabbitMQName=$rabbitMQName -v serviceNamespace=$serviceNamespace -v workloadNamespace=$workloadNamespace -v dbType=$dbType -v dbName=$dbName -v redisName=$redisName  >> ./$outputDir/workloads.yaml
+ytt -f ./tshirt-templates/$tshirtSize/workloads.yaml -v rabbitMQName=$rabbitMQName -v serviceNamespace=$serviceNamespace -v workloadNamespace=$workloadNamespace -v dbType=$dbType -v dbName=$dbName -v redisName=$redisName  -v useWebType=$useWebType -v useTestScan=$useTestScan >> ./$outputDir/workloads.yaml
 
 if [ "$tshirtSize" == "medium" ] || [ "$tshirtSize" == "large" ]
 then
@@ -229,6 +255,5 @@ then
   ./runInstall.sh
 fi
 
-
-printf "\nTo run or re-run the component install, 'cd' to the %s directory and run './runInstall.sh'" "'$outputDir'"
+printf "\n\nTo run or re-run the component install, 'cd' to the %s directory and run './runInstall.sh'" "'$outputDir'"
 echo ' '

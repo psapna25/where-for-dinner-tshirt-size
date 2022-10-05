@@ -18,14 +18,13 @@ then
     kubectl apply -f ./$dbInstanceFile
     echo ' '
     echo "Waiting for Database instance to spin up."
+
     if [ "$dbType" == "mysql" ]
     then
         kubectl wait --for=condition=ready --timeout=300s pod -l app.kubernetes.io/instance=$dbName -n $serviceNamespace 
     else
         kubectl wait --for=condition=ready --timeout=300s pod -l postgres-instance=$dbName,type=data -n $serviceNamespace 
     fi
-
-    kubectl apply -f ./$dbInstanceFile
 
     kubectl apply -f ./$dbClaimFile
 
