@@ -9,8 +9,3 @@ metadata:
   namespace: #@ data.values.serviceNamespace
 spec:
   replicas: 1
-  resources:
-    requests:
-      cpu: 200m
-    limits:
-      cpu: 200m
