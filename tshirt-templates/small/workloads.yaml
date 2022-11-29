@@ -49,6 +49,13 @@ spec:
       autoscaling.knative.dev/minScale: "1"  
       autoscaling.knative.dev/target: "200"
       autoscaling.knative.dev/maxScale: "4"
+  resources:     
+    requests:         
+      memory: "1.0G"
+      cpu: "1000m"
+    limits:         
+      memory: "3.0G"
+      cpu: "2000m"   
   source:
     git:
       url: https://github.com/gm2552/hungryman.git
@@ -75,6 +82,13 @@ spec:
       apiVersion: services.apps.tanzu.vmware.com/v1alpha1
       kind: ResourceClaim
       name: #@ data.values.rabbitMQName
+  resources:     
+    requests:         
+      memory: "1.0G"
+      cpu: "1000m"
+    limits:         
+      memory: "3.0G"
+      cpu: "2000m"  
   source:
     git:
       url: https://github.com/gm2552/hungryman.git
@@ -105,6 +119,13 @@ spec:
       apiVersion: services.apps.tanzu.vmware.com/v1alpha1
       kind: ResourceClaim
       name: #@ data.values.rabbitMQName
+  resources:     
+    requests:         
+      memory: "1.0G"
+      cpu: "1000m"
+    limits:         
+      memory: "3.0G"
+      cpu: "2000m"        
   source:
     git:
       url: https://github.com/gm2552/hungryman.git
@@ -130,6 +151,13 @@ spec:
       apiVersion: services.apps.tanzu.vmware.com/v1alpha1
       kind: ResourceClaim
       name: #@ data.values.rabbitMQName
+  resources:     
+    requests:         
+      memory: "1.0G"
+      cpu: "1000m"
+    limits:         
+      memory: "3.0G"
+      cpu: "2000m"        
   source:
     git:
       url: https://github.com/gm2552/hungryman.git
@@ -150,6 +178,13 @@ metadata:
     apps.tanzu.vmware.com/has-tests: #@ useTestScan()      
 spec:
   params: #@ buildParams(3000) 
+  resources:     
+    requests:         
+      memory: "1.0G"
+      cpu: "1000m"
+    limits:         
+      memory: "3.0G"
+      cpu: "2000m"    
   source:
     git:
       url: https://github.com/gm2552/hungryman.git
