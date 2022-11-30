@@ -63,9 +63,6 @@ spec:
       autoscaling.knative.dev/target: "200"
       autoscaling.knative.dev/maxScale: "4"
   resources:     
-    requests:         
-      memory: "1.0G"
-      cpu: "1000m"
     limits:         
       memory: "3.0G"
       cpu: "2000m"        
@@ -102,9 +99,6 @@ spec:
       kind: ResourceClaim
       name: #@ data.values.dbName
   resources:     
-    requests:         
-      memory: "1.0G"
-      cpu: "1000m"
     limits:         
       memory: "3.0G"
       cpu: "2000m"        
@@ -133,9 +127,6 @@ spec:
       value: '-P native -Dmaven.test.skip=true --no-transfer-progress package'
   params: #@ buildParams(8080,False)
   resources:     
-    requests:         
-      memory: "1.0G"
-      cpu: "1000m"
     limits:         
       memory: "3.0G"
       cpu: "2000m"    
@@ -164,9 +155,6 @@ spec:
       value: '-P native -Dmaven.test.skip=true --no-transfer-progress package'
   params: #@ buildParams(8080,False)
   resources:     
-    requests:         
-      memory: "1.0G"
-      cpu: "1000m"
     limits:         
       memory: "3.0G"
       cpu: "2000m"    
@@ -201,9 +189,6 @@ spec:
       kind: ResourceClaim
       name: #@ data.values.dbName   
   resources:     
-    requests:         
-      memory: "1.0G"
-      cpu: "1000m"
     limits:         
       memory: "3.0G"
       cpu: "2000m"        
@@ -228,9 +213,6 @@ metadata:
 spec:
   params:  #@ buildParams(3000,True)
   resources:     
-    requests:         
-      memory: "1.0G"
-      cpu: "1000m"
     limits:         
       memory: "3.0G"
       cpu: "2000m"    
