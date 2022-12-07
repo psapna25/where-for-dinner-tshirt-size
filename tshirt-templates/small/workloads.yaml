@@ -50,9 +50,12 @@ spec:
       autoscaling.knative.dev/target: "200"
       autoscaling.knative.dev/maxScale: "4"
   resources:     
+    requests:         
+      memory: "250M"
+      cpu: "100m"
     limits:         
-      memory: "3.0G"
-      cpu: "2000m"   
+      memory: "1.5G"
+      cpu: "1000m"   
   source:
     git:
       url: https://github.com/gm2552/hungryman.git
@@ -80,9 +83,12 @@ spec:
       kind: ResourceClaim
       name: #@ data.values.rabbitMQName
   resources:     
+    requests:         
+      memory: "250M"
+      cpu: "100m"
     limits:         
-      memory: "3.0G"
-      cpu: "2000m"  
+      memory: "1.5G"
+      cpu: "1000m" 
   source:
     git:
       url: https://github.com/gm2552/hungryman.git
@@ -114,9 +120,12 @@ spec:
       kind: ResourceClaim
       name: #@ data.values.rabbitMQName
   resources:     
+    requests:         
+      memory: "250M"
+      cpu: "100m"
     limits:         
-      memory: "3.0G"
-      cpu: "2000m"        
+      memory: "1.5G"
+      cpu: "1000m"        
   source:
     git:
       url: https://github.com/gm2552/hungryman.git
@@ -143,9 +152,12 @@ spec:
       kind: ResourceClaim
       name: #@ data.values.rabbitMQName
   resources:     
+    requests:         
+      memory: "250M"
+      cpu: "100m"
     limits:         
-      memory: "3.0G"
-      cpu: "2000m"        
+      memory: "1.5G"
+      cpu: "1000m"        
   source:
     git:
       url: https://github.com/gm2552/hungryman.git
@@ -167,9 +179,12 @@ metadata:
 spec:
   params: #@ buildParams(3000) 
   resources:     
+    requests:         
+      memory: "250M"
+      cpu: "100m"
     limits:         
-      memory: "3.0G"
-      cpu: "2000m"    
+      memory: "1.5G"
+      cpu: "1000m"   
   source:
     git:
       url: https://github.com/gm2552/hungryman.git
