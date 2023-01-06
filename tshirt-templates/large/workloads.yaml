@@ -54,7 +54,8 @@ metadata:
   labels:
     apps.tanzu.vmware.com/workload-type: web
     app.kubernetes.io/part-of: hungryman-api-gateway
-    apps.tanzu.vmware.com/has-tests: #@ useTestScan()    
+    apps.tanzu.vmware.com/has-tests: #@ useTestScan()   
+    apps.tanzu.vmware.com/auto-configure-actuators: "true" 
 spec:
   params:
   - name: annotations
@@ -64,11 +65,11 @@ spec:
       autoscaling.knative.dev/maxScale: "4"
   resources:     
     requests:         
-      memory: "250M"
+      memory: "500"
       cpu: "100m"
     limits:         
-      memory: "1.5G"
-      cpu: "1000m"       
+      memory: "750M"
+      cpu: "1000m"     
   source:
     git:
       url: https://github.com/gm2552/hungryman.git
@@ -86,7 +87,8 @@ metadata:
     apps.tanzu.vmware.com/workload-type: #@ getWorkloadType()
     app.kubernetes.io/part-of: hungryman-search
     networking.knative.dev/visibility: cluster-local
-    apps.tanzu.vmware.com/has-tests: #@ useTestScan()    
+    apps.tanzu.vmware.com/has-tests: #@ useTestScan()  
+    apps.tanzu.vmware.com/auto-configure-actuators: "true"  
 spec:
   env: #@ buildDBProfileEnv()
   params: #@ buildParams(8080,True)
@@ -103,10 +105,10 @@ spec:
       name: #@ data.values.dbName
   resources:     
     requests:         
-      memory: "250M"
+      memory: "500"
       cpu: "100m"
     limits:         
-      memory: "1.5G"
+      memory: "750M"
       cpu: "1000m"       
   source:
     git:
@@ -125,7 +127,8 @@ metadata:
     apps.tanzu.vmware.com/workload-type: #@ getWorkloadType()
     app.kubernetes.io/part-of: hungryman-search-proc
     networking.knative.dev/visibility: cluster-local
-    apps.tanzu.vmware.com/has-tests: #@ useTestScan()    
+    apps.tanzu.vmware.com/has-tests: #@ useTestScan()  
+    apps.tanzu.vmware.com/auto-configure-actuators: "true"  
 spec:
   build: 
     env:
@@ -143,10 +146,10 @@ spec:
       name: #@ data.values.redisName + "-redis-secret"
   resources:     
     requests:         
-      memory: "250M"
+      memory: "500"
       cpu: "100m"
     limits:         
-      memory: "1.5G"
+      memory: "750M"
       cpu: "1000m"  
   source:
     git:
@@ -165,7 +168,8 @@ metadata:
     apps.tanzu.vmware.com/workload-type: #@ getWorkloadType()
     app.kubernetes.io/part-of: hungryman-notify
     networking.knative.dev/visibility: cluster-local
-    apps.tanzu.vmware.com/has-tests: #@ useTestScan()    
+    apps.tanzu.vmware.com/has-tests: #@ useTestScan()   
+    apps.tanzu.vmware.com/auto-configure-actuators: "true"       
 spec:
   build: 
     env:
@@ -174,10 +178,10 @@ spec:
   params: #@ buildParams(8080,False)
   resources:     
     requests:         
-      memory: "250M"
+      memory: "500"
       cpu: "100m"
     limits:         
-      memory: "1.5G"
+      memory: "750M"
       cpu: "1000m" 
   source:
     git:
@@ -195,7 +199,8 @@ metadata:
     apps.tanzu.vmware.com/workload-type: #@ getWorkloadType()
     app.kubernetes.io/part-of: hungryman-availability
     networking.knative.dev/visibility: cluster-local
-    apps.tanzu.vmware.com/has-tests: #@ useTestScan()    
+    apps.tanzu.vmware.com/has-tests: #@ useTestScan()  
+    apps.tanzu.vmware.com/auto-configure-actuators: "true"    
 spec:
   build: 
     env:
@@ -211,10 +216,10 @@ spec:
       name: #@ data.values.dbName   
   resources:     
     requests:         
-      memory: "250M"
+      memory: "500"
       cpu: "100m"
     limits:         
-      memory: "1.5G"
+      memory: "750M"
       cpu: "1000m" 
   source:
     git:
@@ -238,10 +243,10 @@ spec:
   params: #@ buildParams(3000,True) 
   resources:     
     requests:         
-      memory: "250M"
+      memory: "500"
       cpu: "100m"
     limits:         
-      memory: "1.5G"
+      memory: "750M"
       cpu: "1000m"  
   source:
     git:
@@ -258,7 +263,8 @@ metadata:
   labels:
     apps.tanzu.vmware.com/workload-type: server
     app.kubernetes.io/part-of: hungryman-crawler
-    apps.tanzu.vmware.com/has-tests: #@ useTestScan()    
+    apps.tanzu.vmware.com/has-tests: #@ useTestScan()  
+    apps.tanzu.vmware.com/auto-configure-actuators: "true"    
 spec:
   params:
   - name: ports
@@ -268,11 +274,11 @@ spec:
       name: http
   resources:     
     requests:         
-      memory: "250M"
+      memory: "500"
       cpu: "100m"
     limits:         
-      memory: "1.5G"
-      cpu: "1000m"       
+      memory: "750M"
+      cpu: "1000m"      
   source:
     git:
       url: https://github.com/gm2552/hungryman.git
