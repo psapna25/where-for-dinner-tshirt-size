@@ -65,11 +65,15 @@ spec:
       autoscaling.knative.dev/maxScale: "4"
   resources:     
     requests:         
-      memory: "500"
+      memory: "500M"
       cpu: "100m"
     limits:         
       memory: "750M"
-      cpu: "1000m"     
+      cpu: "1500m"         
+  build:
+    env:
+      - name: BP_JVM_VERSION
+        value: "17"      
   source:
     git:
       url: https://github.com/gm2552/hungryman.git
@@ -105,11 +109,15 @@ spec:
       name: #@ data.values.dbName
   resources:     
     requests:         
-      memory: "500"
+      memory: "500M"
       cpu: "100m"
     limits:         
       memory: "750M"
-      cpu: "1000m"    
+      cpu: "1500m"         
+  build:
+    env:
+      - name: BP_JVM_VERSION
+        value: "17"  
   source:
     git:
       url: https://github.com/gm2552/hungryman.git
@@ -134,14 +142,16 @@ spec:
     env:
     - name: BP_MAVEN_BUILD_ARGUMENTS
       value: '-P native -Dmaven.test.skip=true --no-transfer-progress package'
+    - name: BP_JVM_VERSION
+      value: "17" 
   params: #@ buildParams(8080,False)
   resources:     
     requests:         
-      memory: "500"
+      memory: "500M"
       cpu: "100m"
     limits:         
       memory: "750M"
-      cpu: "1000m"  
+      cpu: "1500m"               
   source:
     git:
       url: https://github.com/gm2552/hungryman.git
@@ -166,14 +176,16 @@ spec:
     env:
     - name: BP_MAVEN_BUILD_ARGUMENTS
       value: '-P native -Dmaven.test.skip=true --no-transfer-progress package'
+    - name: BP_JVM_VERSION
+      value: "17"        
   params: #@ buildParams(8080,False)
   resources:     
     requests:         
-      memory: "500"
+      memory: "500M"
       cpu: "100m"
     limits:         
       memory: "750M"
-      cpu: "1000m"   
+      cpu: "1500m"         
   source:
     git:
       url: https://github.com/gm2552/hungryman.git
@@ -197,6 +209,8 @@ spec:
     env:
     - name: BP_MAVEN_BUILD_ARGUMENTS
       value: '-P native -Dmaven.test.skip=true --no-transfer-progress package'
+    - name: BP_JVM_VERSION
+      value: "17"       
   env: #@ buildDBProfileEnv()
   params:  #@ buildParams(8080,True)
   serviceClaims:
@@ -207,11 +221,11 @@ spec:
       name: #@ data.values.dbName   
   resources:     
     requests:         
-      memory: "500"
+      memory: "500M"
       cpu: "100m"
     limits:         
       memory: "750M"
-      cpu: "1000m"     
+      cpu: "1.5"         
   source:
     git:
       url: https://github.com/gm2552/hungryman.git
@@ -231,14 +245,20 @@ metadata:
     networking.knative.dev/visibility: cluster-local
     apps.tanzu.vmware.com/has-tests: #@ useTestScan()    
 spec:
-  params:  #@ buildParams(3000,True)
+  build:
+    env:
+    - name: BP_NODE_RUN_SCRIPTS
+      value: build
+    - name: BP_WEB_SERVER_ROOT
+      value: dist
+  params: #@ buildParams(8080,True) 
   resources:     
     requests:         
-      memory: "500"
+      memory: "500M"
       cpu: "100m"
     limits:         
       memory: "750M"
-      cpu: "1000m" 
+      cpu: "1500m"  
   source:
     git:
       url: https://github.com/gm2552/hungryman.git
