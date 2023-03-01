@@ -58,7 +58,7 @@ spec:
   broker: hungryman
   filter:
     attributes:
-      source: 'http://spring.io/'
+      source: 'http://spring.io/hungryman-search-proc'
       type: 'com.java.example.tanzu.wherefordinner.model.Availability'
   subscriber:
     ref:
@@ -80,7 +80,7 @@ spec:
   broker: hungryman
   filter:
     attributes:
-      source: 'http://spring.io/'
+      source: 'http://spring.io/hungryman-search-proc'
       type: 'com.java.example.tanzu.wherefordinner.model.Availability'
   subscriber:
     ref:
