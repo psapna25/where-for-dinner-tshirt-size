@@ -3,10 +3,10 @@
 default_tshirt_size=small
 default_workload_namespace=workloads
 default_service_namespace=service-instances
-default_rabbit_name=rmq-hungryman
+default_rabbit_name=rmq-where-for-dinner
 default_db_type=mysql
-default_db_name=hungryman
-default_redis_name=redis-hungryman
+default_db_name=where-for-dinner
+default_redis_name=redis-where-for-dinner
 accept=no
 
 # Get user input
@@ -208,7 +208,6 @@ then
   dbInstanceFile=$dbType'Instance.yaml'
   dbClaimFile=$dbType'ResourceClaim.yaml'
 
-  ytt -f ./tshirt-templates/$tshirtSize/knEventing.yaml -v rabbitMQName=$rabbitMQName -v serviceNamespace=$serviceNamespace -v workloadNamespace=$workloadNamespace >> ./$outputDir/knEventing.yaml
   ytt -f ./tshirt-templates/medium/$dbInstanceFile -v dbName=$dbName -v serviceNamespace=$serviceNamespace >> ./$outputDir/$dbInstanceFile
   ytt -f ./tshirt-templates/medium/$dbClaimFile -v dbName=$dbName -v serviceNamespace=$serviceNamespace -v workloadNamespace=$workloadNamespace >> ./$outputDir/$dbClaimFile
 

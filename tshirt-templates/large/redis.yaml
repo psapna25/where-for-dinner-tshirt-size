@@ -19,14 +19,14 @@ metadata:
   name: #@ data.values.redisName
   namespace: #@ data.values.workloadNamespace
   labels:
-    app: #@ 'hungryman-' + data.values.workloadNamespace
+    app: #@ 'where-for-dinner-' + data.values.workloadNamespace
     service: #@ data.values.redisName
 spec:
   ports:
     - port: 6379
       name: redis-client
   selector:
-    app: #@ 'hungryman-' + data.values.workloadNamespace
+    app: #@ 'where-for-dinner-' + data.values.workloadNamespace
     service: #@ data.values.redisName
 ---
 apiVersion: apps/v1
@@ -35,18 +35,18 @@ metadata:
   name: #@ data.values.redisName
   namespace: #@ data.values.workloadNamespace
   labels:
-    app: #@ 'hungryman-' + data.values.workloadNamespace
+    app: #@ 'where-for-dinner-' + data.values.workloadNamespace
     service: #@ data.values.redisName
 spec:
   selector:
     matchLabels:
-      app: #@ 'hungryman-' + data.values.workloadNamespace  
+      app: #@ 'where-for-dinner-' + data.values.workloadNamespace  
       service: #@ data.values.redisName
   replicas: 1
   template:
     metadata:
       labels:
-        app: #@ 'hungryman-' + data.values.workloadNamespace    
+        app: #@ 'where-for-dinner-' + data.values.workloadNamespace    
         service: #@ data.values.redisName
     spec:
       containers:

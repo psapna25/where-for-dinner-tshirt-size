@@ -12,7 +12,7 @@ then
         kubectl apply -f ./redis.yaml
         echo ' '
         echo "Waiting for Redis instance to spin up."
-        kubectl wait --for=condition=ready --timeout=300s pod -l app=hungryman-$workloadNamespace,service=$redisName -n $workloadNamespace 
+        kubectl wait --for=condition=ready --timeout=300s pod -l app=where-for-dinner-$workloadNamespace,service=$redisName -n $workloadNamespace 
     fi
 
     kubectl apply -f ./$dbInstanceFile
@@ -35,7 +35,6 @@ then
     echo "Waiting for RabbitMQ instance to spin up."
     kubectl wait --for=condition=ready --timeout=300s pod -l app.kubernetes.io/name=$rabbitMQName -n $serviceNamespace 
 
-    kubectl apply -f ./knEventing.yaml
 else
     echo ' '
     echo "Waiting for RabbitMQ instance to spin up."

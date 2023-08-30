@@ -23,7 +23,7 @@ spec:
                   - key: "app.kubernetes.io/instance"
                     operator: In
                     values:
-                      - hungryman
+                      - where-for-dinner
     tolerations:
     - key: node.kubernetes.io/disk-pressure
       operator: "Exists"
@@ -45,7 +45,7 @@ spec:
                   - key: "app.kubernetes.io/instance"
                     operator: In
                     values:
-                      - hungryman
+                      - where-for-dinner
     tolerations:
     - key: node.kubernetes.io/memory-pressure
       operator: "Exists"

@@ -36,11 +36,11 @@
 apiVersion: carto.run/v1alpha1
 kind: Workload
 metadata:
-  name: hungryman
+  name: where-for-dinner
   namespace: #@ data.values.workloadNamespace
   labels:
     apps.tanzu.vmware.com/workload-type: web
-    app.kubernetes.io/part-of: hungryman-api-gateway
+    app.kubernetes.io/part-of: where-for-dinner-api-gateway
     apps.tanzu.vmware.com/has-tests: #@ useTestScan()
     apps.tanzu.vmware.com/auto-configure-actuators: "true"      
 spec:
@@ -63,20 +63,20 @@ spec:
         value: "17"     
   source:
     git:
-      url: https://github.com/gm2552/hungryman.git
+      url: https://github.com/vmware-tanzu/application-accelerator-samples.git
       ref:
         branch: main
-    subPath: hungryman-api-gateway
+    subPath: where-for-dinner/where-for-dinner-api-gateway
     
 ---
 apiVersion: carto.run/v1alpha1
 kind: Workload
 metadata:
-  name: hungryman-search
+  name: where-for-dinner-search
   namespace: #@ data.values.workloadNamespace
   labels:
     apps.tanzu.vmware.com/workload-type: #@ getWorkloadType("server")
-    app.kubernetes.io/part-of: hungryman-search
+    app.kubernetes.io/part-of: where-for-dinner-search
     networking.knative.dev/visibility: cluster-local
     apps.tanzu.vmware.com/has-tests: #@ useTestScan()  
     apps.tanzu.vmware.com/auto-configure-actuators: "true"        
@@ -101,19 +101,19 @@ spec:
         value: "17" 
   source:
     git:
-      url: https://github.com/gm2552/hungryman.git
+      url: https://github.com/vmware-tanzu/application-accelerator-samples.git
       ref:
         branch: main
-    subPath: hungryman-search
+    subPath: where-for-dinner/where-for-dinner-search
 ---
 apiVersion: carto.run/v1alpha1
 kind: Workload
 metadata:
-  name: hungryman-search-proc
+  name: where-for-dinner-search-proc
   namespace: #@ data.values.workloadNamespace
   labels:
     apps.tanzu.vmware.com/workload-type: #@ getWorkloadType("worker")
-    app.kubernetes.io/part-of: hungryman-search-proc
+    app.kubernetes.io/part-of: where-for-dinner-search-proc
     networking.knative.dev/visibility: cluster-local
     apps.tanzu.vmware.com/has-tests: #@ useTestScan()      
     apps.tanzu.vmware.com/auto-configure-actuators: "true"      
@@ -143,19 +143,19 @@ spec:
         value: "17"      
   source:
     git:
-      url: https://github.com/gm2552/hungryman.git
+      url: https://github.com/vmware-tanzu/application-accelerator-samples.git
       ref:
         branch: main
-    subPath: hungryman-search-proc
+    subPath: where-for-dinner/where-for-dinner-search-proc
 ---
 apiVersion: carto.run/v1alpha1
 kind: Workload
 metadata:
-  name: hungryman-availability
+  name: where-for-dinner-availability
   namespace: #@ data.values.workloadNamespace
   labels:
     apps.tanzu.vmware.com/workload-type: #@ getWorkloadType("server")
-    app.kubernetes.io/part-of: hungryman-availability
+    app.kubernetes.io/part-of: where-for-dinner-availability
     networking.knative.dev/visibility: cluster-local
     apps.tanzu.vmware.com/has-tests: #@ useTestScan()   
     apps.tanzu.vmware.com/auto-configure-actuators: "true"    
@@ -180,20 +180,20 @@ spec:
         value: "17"       
   source:
     git:
-      url: https://github.com/gm2552/hungryman.git
+      url: https://github.com/vmware-tanzu/application-accelerator-samples.git
       ref:
         branch: main
-    subPath: hungryman-availability
+    subPath: where-for-dinner/where-for-dinner-availability
 
 ---
 apiVersion: carto.run/v1alpha1
 kind: Workload
 metadata:
-  name: hungryman-ui
+  name: where-for-dinner-ui
   namespace: #@ data.values.workloadNamespace
   labels:
     apps.tanzu.vmware.com/workload-type: #@ getWorkloadType("server")
-    app.kubernetes.io/part-of: hungryman-ui
+    app.kubernetes.io/part-of: where-for-dinner-ui
     networking.knative.dev/visibility: cluster-local
     apps.tanzu.vmware.com/has-tests: #@ useTestScan()      
 spec:
@@ -213,7 +213,7 @@ spec:
       cpu: "1500m"  
   source:
     git:
-      url: https://github.com/gm2552/hungryman.git
+      url: https://github.com/vmware-tanzu/application-accelerator-samples.git
       ref:
         branch: main
-    subPath: hungryman-ui
+    subPath: where-for-dinner/where-for-dinner-ui
