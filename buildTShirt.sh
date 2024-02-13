@@ -197,7 +197,7 @@ mkdir $outputDir
 
 printf '\nGenerating configuration files into directory %s\n' "'$outputDir'"
 
-rm -rf ./$outputDir/* -y 
+rm -rf ./$outputDir/* 
 
 ytt -f ./tshirt-templates/common/rmqCluster.yaml -v rabbitMQName=$rabbitMQName -v serviceNamespace=$serviceNamespace >> ./$outputDir/rmqCluster.yaml
 ytt -f ./tshirt-templates/common/rmqResourceClaim.yaml -v rabbitMQName=$rabbitMQName -v serviceNamespace=$serviceNamespace -v workloadNamespace=$workloadNamespace >> ./$outputDir/rmqResourceClaim.yaml
