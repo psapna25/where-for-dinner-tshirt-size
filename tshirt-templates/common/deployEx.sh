@@ -25,6 +25,8 @@ then
     kubectl apply -f ./$dbInstanceFile
     echo ' '
     echo "Waiting for Database instance to spin up."
+    echo "Sleeping for 60 seconds."
+    sleep 60
 
     if [ "$dbType" == "mysql" ]
     then
