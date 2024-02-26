@@ -1,6 +1,8 @@
 echo "Applying conponent configuration to the cluster"
 kubectl create ns $serviceNamespace
 kubectl create ns $workloadNamespace
+kubectl label namespaces $serviceNamespace apps.tanzu.vmware.com/tap-ns=true
+kubectl label namespaces $workloadNamespace apps.tanzu.vmware.com/tap-ns=true
 
 kubectl apply -f ./rmqCluster.yaml
 
